@@ -58,13 +58,14 @@ const helper = {
         // Give a name to the spot light
         light_1.name = "light 1";
 
+
         // *********************************** //
         // Create renderer (with shadow map)
         // *********************************** //
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         sceneElements.renderer = renderer;
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setClearColor("rgb(255, 255, 150)", 1.0);
+        renderer.setClearColor("rgb(255, 255, 255)", 1.0);
         renderer.setSize(width, height);
 
         // Setup shadowMap property
@@ -102,10 +103,10 @@ const scene = {
 
         loader.load('samurai_v2/scene.gltf', function (gltf) {
             let gltfScene = gltf.scene;
-            gltfScene.name = "Samurai_v1";
+            gltfScene.name = "Samurai_v2";
             sceneGraph.add(gltfScene);
             gltfScene.scale.set(0.05, 0.05, 0.05);
-            gltfScene.translateX(0).translateY(0);
+            gltfScene.translateX(0).translateY(-0.25);
 
         }, undefined, function (error) {
 
@@ -113,6 +114,14 @@ const scene = {
 
         }
         );
+
+        // Add a plane
+        const planeGeometry = new THREE.PlaneGeometry(100, 100);
+        const planeMaterial = new THREE.MeshBasicMaterial({ color: "rgb(0, 255, 255)", side: THREE.DoubleSide, opacity:1 });
+        const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        // plane.scale.set(20, 20, 20)
+        plane.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2);
+        sceneGraph.add(plane);
 
     },
 };
@@ -130,15 +139,15 @@ var keyD = false,
 
 function computeFrame(time) {
     // Can extract an object from the scene Graph from its name
-    const light_1 = sceneElements.sceneGraph.getObjectByName("light 1");
+    // const light_1 = sceneElements.sceneGraph.getObjectByName("light 1");
 
-    // Apply a small displacement
-    if (light_1.position.x >= 30) {
-        delta *= -1;
-    } else if (light_1.position.x <= -30) {
-        delta *= -1;
-    }
-    light_1.translateX(delta);
+    // // Apply a small displacement
+    // if (light_1.position.x >= 30) {
+    //     delta *= -1;
+    // } else if (light_1.position.x <= -30) {
+    //     delta *= -1;
+    // }
+    // light_1.translateX(delta);
 
     // Rotating the first cube
 
