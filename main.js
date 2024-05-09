@@ -184,14 +184,6 @@ function computeFrame(time) {
   // }
   // light_1.translateX(delta);
 
-  // Rotating the first cube
-
-  // const samurai_v1 = sceneElements.sceneGraph.getObjectByName("Samurai_v1");
-
-  // samurai_v1.rotateX(0.01);
-  // samurai_v1.rotateY(0.01);
-  // samurai_v1.rotateZ(0.01);
-
   // Rendering
   if (mixer) {
     mixer.update(clock.getDelta())
@@ -262,7 +254,7 @@ function directionOffset(keysPressed) {
     directionOffset = -Math.PI / 2
   }
 
-  return directionOffset
+  return directionOffset + Math.PI
 }
 
 function onDocumentKeyDown(event) {
@@ -286,8 +278,8 @@ function onDocumentKeyDown(event) {
       walkDirection.y = 0
       walkDirection.normalize()
       walkDirection.applyAxisAngle(rotateAngle, offset)
-      var moveX = walkDirection.x * runVelocity * delta
-      var moveZ = walkDirection.z * runVelocity * delta
+      var moveX = - walkDirection.x * runVelocity * delta
+      var moveZ = - walkDirection.z * runVelocity * delta
       model.position.x += moveX
       model.position.z += moveZ
       sceneElements.camera.position.x += moveX
@@ -312,8 +304,8 @@ function onDocumentKeyDown(event) {
       walkDirection.y = 0
       walkDirection.normalize()
       walkDirection.applyAxisAngle(rotateAngle, offset)
-      var moveX = walkDirection.x * runVelocity * delta
-      var moveZ = walkDirection.z * runVelocity * delta
+      var moveX = - walkDirection.x * runVelocity * delta
+      var moveZ = - walkDirection.z * runVelocity * delta
       model.position.x += moveX
       model.position.z += moveZ
       sceneElements.camera.position.x += moveX
@@ -338,8 +330,8 @@ function onDocumentKeyDown(event) {
       walkDirection.y = 0
       walkDirection.normalize()
       walkDirection.applyAxisAngle(rotateAngle, offset)
-      var moveX = walkDirection.x * runVelocity * delta
-      var moveZ = walkDirection.z * runVelocity * delta
+      var moveX = - walkDirection.x * runVelocity * delta
+      var moveZ = - walkDirection.z * runVelocity * delta
       model.position.x += moveX
       model.position.z += moveZ
       sceneElements.camera.position.x += moveX
@@ -364,8 +356,8 @@ function onDocumentKeyDown(event) {
       walkDirection.y = 0
       walkDirection.normalize()
       walkDirection.applyAxisAngle(rotateAngle, offset)
-      var moveX = walkDirection.x * runVelocity * delta
-      var moveZ = walkDirection.z * runVelocity * delta
+      var moveX = - walkDirection.x * runVelocity * delta
+      var moveZ = - walkDirection.z * runVelocity * delta
       model.position.x += moveX
       model.position.z += moveZ
       sceneElements.camera.position.x += moveX
