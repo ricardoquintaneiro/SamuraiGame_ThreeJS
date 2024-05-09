@@ -3,8 +3,8 @@ import * as THREE from "three"
 import { OrbitControls } from "three/addons/controls/OrbitControls.js"
 import { GLTFLoader } from "three/examples/jsm/Addons.js"
 
-const groundTextureUrl = new URL("public/ground.jpg", import.meta.url)
-const samuraiUrl = new URL("public/samurai.glb", import.meta.url)
+const groundTextureUrl = new URL("ground.jpg", import.meta.url)
+const samuraiUrl = new URL("samurai.glb", import.meta.url)
 
 const loader = new GLTFLoader()
 
@@ -142,9 +142,53 @@ const scene = {
       side: THREE.DoubleSide,
     })
     const plane = new THREE.Mesh(planeGeometry, planeMaterial)
+    plane.receiveShadow = true
     // plane.scale.set(20, 20, 20)
     plane.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), Math.PI / 2)
     sceneGraph.add(plane)
+
+    const skyboxGeo = new THREE.BoxGeometry(500, 500, 500)
+    const materialArray = [
+      new THREE.MeshBasicMaterial({
+        map: new THREE.TextureLoader().load(
+          "skybox/level1/afterrain_ft.jpg"
+        ),
+        side: THREE.DoubleSide,
+      }),
+      new THREE.MeshBasicMaterial({
+        map: new THREE.TextureLoader().load(
+          "skybox/level1/afterrain_bk.jpg"
+        ),
+        side: THREE.DoubleSide,
+      }),
+      new THREE.MeshBasicMaterial({
+        map: new THREE.TextureLoader().load(
+          "skybox/level1/afterrain_up.jpg"
+        ),
+        side: THREE.DoubleSide,
+      }),
+      new THREE.MeshBasicMaterial({
+        map: new THREE.TextureLoader().load(
+          "skybox/level1/afterrain_dn.jpg"
+        ),
+        side: THREE.DoubleSide,
+      }),
+      new THREE.MeshBasicMaterial({
+        map: new THREE.TextureLoader().load(
+          "skybox/level1/afterrain_rt.jpg"
+        ),
+        side: THREE.DoubleSide,
+      }),
+      new THREE.MeshBasicMaterial({
+        map: new THREE.TextureLoader().load(
+          "skybox/level1/afterrain_lf.jpg"
+        ),
+        side: THREE.DoubleSide,
+      }),
+    ]
+
+    const skybox = new THREE.Mesh(skyboxGeo, materialArray)
+    sceneGraph.add(skybox)
   },
 }
 
@@ -278,14 +322,14 @@ function onDocumentKeyDown(event) {
       walkDirection.y = 0
       walkDirection.normalize()
       walkDirection.applyAxisAngle(rotateAngle, offset)
-      var moveX = - walkDirection.x * runVelocity * delta
-      var moveZ = - walkDirection.z * runVelocity * delta
+      var moveX = -walkDirection.x * runVelocity * delta
+      var moveZ = -walkDirection.z * runVelocity * delta
       model.position.x += moveX
       model.position.z += moveZ
       sceneElements.camera.position.x += moveX
       sceneElements.camera.position.z += moveZ
       cameraTarget.x = model.position.x
-      cameraTarget.y = model.position.y + 1 
+      cameraTarget.y = model.position.y + 1
       cameraTarget.z = model.position.z
       sceneElements.control.target = cameraTarget
       break
@@ -304,14 +348,14 @@ function onDocumentKeyDown(event) {
       walkDirection.y = 0
       walkDirection.normalize()
       walkDirection.applyAxisAngle(rotateAngle, offset)
-      var moveX = - walkDirection.x * runVelocity * delta
-      var moveZ = - walkDirection.z * runVelocity * delta
+      var moveX = -walkDirection.x * runVelocity * delta
+      var moveZ = -walkDirection.z * runVelocity * delta
       model.position.x += moveX
       model.position.z += moveZ
       sceneElements.camera.position.x += moveX
       sceneElements.camera.position.z += moveZ
       cameraTarget.x = model.position.x
-      cameraTarget.y = model.position.y + 1 
+      cameraTarget.y = model.position.y + 1
       cameraTarget.z = model.position.z
       sceneElements.control.target = cameraTarget
       break
@@ -330,14 +374,14 @@ function onDocumentKeyDown(event) {
       walkDirection.y = 0
       walkDirection.normalize()
       walkDirection.applyAxisAngle(rotateAngle, offset)
-      var moveX = - walkDirection.x * runVelocity * delta
-      var moveZ = - walkDirection.z * runVelocity * delta
+      var moveX = -walkDirection.x * runVelocity * delta
+      var moveZ = -walkDirection.z * runVelocity * delta
       model.position.x += moveX
       model.position.z += moveZ
       sceneElements.camera.position.x += moveX
       sceneElements.camera.position.z += moveZ
       cameraTarget.x = model.position.x
-      cameraTarget.y = model.position.y + 1 
+      cameraTarget.y = model.position.y + 1
       cameraTarget.z = model.position.z
       sceneElements.control.target = cameraTarget
       break
@@ -356,19 +400,27 @@ function onDocumentKeyDown(event) {
       walkDirection.y = 0
       walkDirection.normalize()
       walkDirection.applyAxisAngle(rotateAngle, offset)
-      var moveX = - walkDirection.x * runVelocity * delta
-      var moveZ = - walkDirection.z * runVelocity * delta
+      var moveX = -walkDirection.x * runVelocity * delta
+      var moveZ = -walkDirection.z * runVelocity * delta
       model.position.x += moveX
       model.position.z += moveZ
       sceneElements.camera.position.x += moveX
       sceneElements.camera.position.z += moveZ
       cameraTarget.x = model.position.x
-      cameraTarget.y = model.position.y + 1 
+      cameraTarget.y = model.position.y + 1
       cameraTarget.z = model.position.z
       sceneElements.control.target = cameraTarget
       break
-    // case 32: //space attack
-    //   break
+    case 32: //space attack
+      keySpace = true
+      action.stop()
+      clip = THREE.AnimationClip.findByName(
+        clips,
+        "Armazenamento para as ações"
+      )
+      action = mixer.clipAction(clip)
+      action.play()
+      break
     // // q
     // case 81:
     //   // rotate camera around the samurai model to the right
@@ -395,6 +447,13 @@ function onDocumentKeyUp(event) {
       break
     case 87: //w
       keyW = false
+      break
+    case 32: //space
+      keySpace = false
+      action.stop()
+      clip = THREE.AnimationClip.findByName(clips, "Run")
+      action = mixer.clipAction(clip)
+      action.play()
       break
   }
 }
