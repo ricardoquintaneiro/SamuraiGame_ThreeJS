@@ -10,6 +10,7 @@ export class CharacterControls {
   // state
   toggleRun = true
   currentAction
+  isAttacking = false
 
   // temp data
   walkDirection = new THREE.Vector3()
@@ -23,6 +24,9 @@ export class CharacterControls {
   walkVelocity = 2
 
   static DIRECTIONS = ["w", "a", "s", "d"]
+  
+  static attackAnimations = ["yasuo_attack1.anm", "yasuo_attack2.anm", "yasuo_attack3.anm", "yasuo_attack4.anm"]
+  static attackIndex = 0
 
   constructor(
     model,
@@ -50,7 +54,37 @@ export class CharacterControls {
     this.toggleRun = !this.toggleRun
   }
 
+  getAttackAnimation() {
+    const attackAnimation = CharacterControls.attackAnimations[CharacterControls.attackIndex]
+    CharacterControls.attackIndex = (CharacterControls.attackIndex + 1) % CharacterControls.attackAnimations.length
+    return attackAnimation
+  }
+
+  attack() {
+    if (this.isAttacking) return
+
+    this.isAttacking = true
+    let attackAnimation = this.getAttackAnimation()
+    const attackAction = this.animationsMap.get(attackAnimation)
+    const current = this.animationsMap.get(this.currentAction)
+
+    current.fadeOut(this.fadeDuration)
+    attackAction.reset().fadeIn(this.fadeDuration).play()
+
+    setTimeout(() => {
+      attackAction.fadeOut(this.fadeDuration)
+      this.isAttacking = false
+    }, 1600)
+
+    this.currentAction = attackAnimation
+  }
+
   update(delta, keysPressed) {
+    if (this.isAttacking) {
+      this.mixer.update(delta)
+      return
+    }
+
     const directionPressed = CharacterControls.DIRECTIONS.some(
       (key) => keysPressed[key] == true
     )
@@ -101,8 +135,8 @@ export class CharacterControls {
           ? this.runVelocity
           : this.walkVelocity
 
-      const moveX = - this.walkDirection.x * velocity * delta
-      const moveZ = - this.walkDirection.z * velocity * delta
+      const moveX = -this.walkDirection.x * velocity * delta
+      const moveZ = -this.walkDirection.z * velocity * delta
       this.model.position.x += moveX
       this.model.position.z += moveZ
       this.updateCameraTarget(moveX, moveZ)

@@ -51,7 +51,7 @@ const helper = {
     // ***************************** //
     const light_1 = new THREE.PointLight("rgb(255, 255, 255)", 200)
     light_1.decay = 1
-    light_1.position.set(0, 20, 100)
+    light_1.position.set(0, 20, 0)
     sceneElements.sceneGraph.add(light_1)
 
     // Setup shadow properties for the spotlight
@@ -73,7 +73,6 @@ const helper = {
 
     // Setup shadowMap property
     renderer.shadowMap.enabled = true
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
     // **************************************** //
     // Add the rendered image in the HTML DOM
@@ -88,7 +87,7 @@ const helper = {
     sceneElements.control.enableDamping = true
     sceneElements.control.minDistance = 5
     sceneElements.control.maxDistance = 15
-    sceneElements.control.screenSpacePanning = true
+    sceneElements.control.enablePan = false
     sceneElements.control.maxPolarAngle = Math.PI / 2 - 0.05
     sceneElements.control.update()
   },
@@ -117,7 +116,6 @@ const scene = {
         model.traverse((o) => {
           if (o.isMesh) {
             o.castShadow = true
-            // o.receiveShadow = true
           }
         })
         sceneGraph.add(model)
@@ -128,7 +126,14 @@ const scene = {
           animationsMap.set(a.name, mixer.clipAction(a))
         })
 
-        characterControls = new CharacterControls(model, mixer, animationsMap, sceneElements.control, sceneElements.camera, "yasuo_idle1.anm")
+        characterControls = new CharacterControls(
+          model,
+          mixer,
+          animationsMap,
+          sceneElements.control,
+          sceneElements.camera,
+          "yasuo_idle1.anm"
+        )
       },
       undefined,
       function (error) {
@@ -187,26 +192,6 @@ const scene = {
 }
 
 // ANIMATION
-
-// Displacement values
-var delta = 0.05
-
-//To keep track of the keyboard - WASD
-var keyD = false,
-  keyA = false,
-  keyS = false,
-  keyW = false,
-  keySpace = false,
-  keyQ = false,
-  keyE = false
-
-let walkDirection = new THREE.Vector3()
-let rotateAngle = new THREE.Vector3(0, 1, 0)
-let rotateQuaternion = new THREE.Quaternion()
-let cameraTarget = new THREE.Vector3(0, 0, 0)
-
-let fadeDuration = 0.2
-let runVelocity = 5
 
 const clock = new THREE.Clock()
 
@@ -269,6 +254,8 @@ const keysPressed = {}
 function onDocumentKeyDown(event) {
   if (event.shiftKey && characterControls) {
     characterControls.switchRunToggle()
+  } else if (event.key.toLowerCase() == " " && characterControls) {
+    characterControls.attack()
   } else {
     keysPressed[event.key.toLowerCase()] = true
   }
