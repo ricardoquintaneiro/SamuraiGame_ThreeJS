@@ -4,7 +4,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js"
 import { GLTFLoader } from "three/examples/jsm/Addons.js"
 
 const groundTextureUrl = new URL("ground.jpg", import.meta.url)
-const samuraiUrl = new URL("samurai.glb", import.meta.url)
+const samuraiUrl = new URL("scene.gltf", import.meta.url)
 
 const loader = new GLTFLoader()
 
@@ -86,6 +86,10 @@ const helper = {
     // NEW --- Control for the camera
     // ************************** //
     sceneElements.control = new OrbitControls(camera, renderer.domElement)
+    sceneElements.control.enableDamping = true
+    sceneElements.control.minDistance = 5
+    sceneElements.control.maxDistance = 15
+    sceneElements.control.maxPolarAngle = Math.PI / 2 - 0.05
     sceneElements.control.screenSpacePanning = true
   },
 
@@ -120,9 +124,6 @@ const scene = {
         sceneGraph.add(model)
         mixer = new THREE.AnimationMixer(model)
         clips = gltf.animations
-        const clip = THREE.AnimationClip.findByName(clips, "Run")
-        const action = mixer.clipAction(clip)
-        action.play()
       },
       undefined,
       function (error) {
@@ -150,39 +151,27 @@ const scene = {
     const skyboxGeo = new THREE.BoxGeometry(500, 500, 500)
     const materialArray = [
       new THREE.MeshBasicMaterial({
-        map: new THREE.TextureLoader().load(
-          "skybox/level1/afterrain_ft.jpg"
-        ),
+        map: new THREE.TextureLoader().load("skybox/level1/afterrain_ft.jpg"),
         side: THREE.DoubleSide,
       }),
       new THREE.MeshBasicMaterial({
-        map: new THREE.TextureLoader().load(
-          "skybox/level1/afterrain_bk.jpg"
-        ),
+        map: new THREE.TextureLoader().load("skybox/level1/afterrain_bk.jpg"),
         side: THREE.DoubleSide,
       }),
       new THREE.MeshBasicMaterial({
-        map: new THREE.TextureLoader().load(
-          "skybox/level1/afterrain_up.jpg"
-        ),
+        map: new THREE.TextureLoader().load("skybox/level1/afterrain_up.jpg"),
         side: THREE.DoubleSide,
       }),
       new THREE.MeshBasicMaterial({
-        map: new THREE.TextureLoader().load(
-          "skybox/level1/afterrain_dn.jpg"
-        ),
+        map: new THREE.TextureLoader().load("skybox/level1/afterrain_dn.jpg"),
         side: THREE.DoubleSide,
       }),
       new THREE.MeshBasicMaterial({
-        map: new THREE.TextureLoader().load(
-          "skybox/level1/afterrain_rt.jpg"
-        ),
+        map: new THREE.TextureLoader().load("skybox/level1/afterrain_rt.jpg"),
         side: THREE.DoubleSide,
       }),
       new THREE.MeshBasicMaterial({
-        map: new THREE.TextureLoader().load(
-          "skybox/level1/afterrain_lf.jpg"
-        ),
+        map: new THREE.TextureLoader().load("skybox/level1/afterrain_lf.jpg"),
         side: THREE.DoubleSide,
       }),
     ]
@@ -315,7 +304,7 @@ function onDocumentKeyDown(event) {
         angleYCameraDirection + offset
       )
       model.quaternion.rotateTowards(rotateQuaternion, 0.2)
-      clip = THREE.AnimationClip.findByName(clips, "Run")
+      clip = THREE.AnimationClip.findByName(clips, "yasuo_idle1.anm")
       action = mixer.clipAction(clip)
       action.play()
       sceneElements.camera.getWorldDirection(walkDirection)
@@ -341,7 +330,7 @@ function onDocumentKeyDown(event) {
         angleYCameraDirection + offset
       )
       model.quaternion.rotateTowards(rotateQuaternion, 0.2)
-      clip = THREE.AnimationClip.findByName(clips, "Run")
+      clip = THREE.AnimationClip.findByName(clips, "yasuo_run2.anm")
       action = mixer.clipAction(clip)
       action.play()
       sceneElements.camera.getWorldDirection(walkDirection)
@@ -367,7 +356,7 @@ function onDocumentKeyDown(event) {
         angleYCameraDirection + offset
       )
       model.quaternion.rotateTowards(rotateQuaternion, 0.2)
-      clip = THREE.AnimationClip.findByName(clips, "Run")
+      clip = THREE.AnimationClip.findByName(clips, "yasuo_run2.anm")
       action = mixer.clipAction(clip)
       action.play()
       sceneElements.camera.getWorldDirection(walkDirection)
@@ -393,7 +382,7 @@ function onDocumentKeyDown(event) {
         angleYCameraDirection + offset
       )
       model.quaternion.rotateTowards(rotateQuaternion, 0.2)
-      clip = THREE.AnimationClip.findByName(clips, "Run")
+      clip = THREE.AnimationClip.findByName(clips, "yasuo_run2.anm")
       action = mixer.clipAction(clip)
       action.play()
       sceneElements.camera.getWorldDirection(walkDirection)
@@ -416,15 +405,16 @@ function onDocumentKeyDown(event) {
       action.stop()
       clip = THREE.AnimationClip.findByName(
         clips,
-        "Armazenamento para as ações"
+        "yasuo_attack1.anm"
       )
       action = mixer.clipAction(clip)
       action.play()
       break
     // // q
     // case 81:
-    //   // rotate camera around the samurai model to the right
-    //   sceneElements.camera.position.x = 15 * Math.cos(sceneElements.camera.rotation.y)
+    //   // rotate camera right
+    //   sceneElements.camera.rotation.x += 0.1
+    //   sceneElements.camera.rotation.z += 0.1
     //   break
     // // e
     // case 69:
@@ -451,10 +441,13 @@ function onDocumentKeyUp(event) {
     case 32: //space
       keySpace = false
       action.stop()
-      clip = THREE.AnimationClip.findByName(clips, "Run")
+      clip = THREE.AnimationClip.findByName(clips, "yasuo_run2.anm")
       action = mixer.clipAction(clip)
       action.play()
       break
+    // case 81: //q
+    //   keyQ = false
+    //   break
   }
 }
 
