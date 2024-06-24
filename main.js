@@ -256,46 +256,15 @@ function onDocumentKeyDown(event) {
     characterControls.switchRunToggle()
   } else if (event.key.toLowerCase() == " " && characterControls) {
     characterControls.attack()
+  } else if (event.key.toLowerCase() == "f" && characterControls) {
+    characterControls.playFlute()
   } else {
     keysPressed[event.key.toLowerCase()] = true
   }
-  //   case 32: //space attack
-  //     keySpace = true
-  //     action.stop()
-  //     clip = THREE.AnimationClip.findByName(
-  //       clips,
-  //       "yasuo_attack1.anm"
-  //     )
-  //     action = mixer.clipAction(clip)
-  //     action.play()
-  //     break
-  //   // // q
-  //   // case 81:
-  //   //   // rotate camera right
-  //   //   sceneElements.camera.rotation.x += 0.1
-  //   //   sceneElements.camera.rotation.z += 0.1
-  //   //   break
-  //   // // e
-  //   // case 69:
-  //   //   // rotate camera left
-  //   //   sceneElements.camera.rotation.y -= 0.1
-  //   //   break
-  // }
 }
 
 function onDocumentKeyUp(event) {
   keysPressed[event.key.toLowerCase()] = false
-  //   case 32: //space
-  //     keySpace = false
-  //     action.stop()
-  //     clip = THREE.AnimationClip.findByName(clips, "yasuo_run2.anm")
-  //     action = mixer.clipAction(clip)
-  //     action.play()
-  //     break
-  //   // case 81: //q
-  //   //   keyQ = false
-  //   //   break
-  // }
 }
 
 // STARTING

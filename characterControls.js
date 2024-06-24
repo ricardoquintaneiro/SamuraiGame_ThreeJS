@@ -24,8 +24,13 @@ export class CharacterControls {
   walkVelocity = 2
 
   static DIRECTIONS = ["w", "a", "s", "d"]
-  
-  static attackAnimations = ["yasuo_attack1.anm", "yasuo_attack2.anm", "yasuo_attack3.anm", "yasuo_attack4.anm"]
+
+  static attackAnimations = [
+    "yasuo_attack1.anm",
+    "yasuo_attack2.anm",
+    "yasuo_attack3.anm",
+    "yasuo_attack4.anm",
+  ]
   static attackIndex = 0
 
   constructor(
@@ -55,8 +60,11 @@ export class CharacterControls {
   }
 
   getAttackAnimation() {
-    const attackAnimation = CharacterControls.attackAnimations[CharacterControls.attackIndex]
-    CharacterControls.attackIndex = (CharacterControls.attackIndex + 1) % CharacterControls.attackAnimations.length
+    const attackAnimation =
+      CharacterControls.attackAnimations[CharacterControls.attackIndex]
+    CharacterControls.attackIndex =
+      (CharacterControls.attackIndex + 1) %
+      CharacterControls.attackAnimations.length
     return attackAnimation
   }
 
@@ -74,9 +82,29 @@ export class CharacterControls {
     setTimeout(() => {
       attackAction.fadeOut(this.fadeDuration)
       this.isAttacking = false
-    }, 1600)
+    }, attackAction.getClip().duration * 1000)
 
     this.currentAction = attackAnimation
+  }
+
+  playFlute() {
+    const danceInAction = this.animationsMap.get("yasuo_dance_in.anm")
+    const danceLoopAction = this.animationsMap.get("yasuo_dance_loop.anm")
+    const current = this.animationsMap.get(this.currentAction)
+
+    current.fadeOut(this.fadeDuration)
+    danceInAction.reset().fadeIn(this.fadeDuration).play()
+
+    danceInAction.clampWhenFinished = true
+    danceInAction.loop = THREE.LoopOnce
+
+    this.currentAction = "yasuo_dance_in.anm"
+
+    this.fluteTimeout = setTimeout(() => {
+      danceInAction.fadeOut(1)
+      danceLoopAction.reset().fadeIn(this.fadeDuration).play()
+      this.currentAction = "yasuo_dance_loop.anm"
+    }, danceInAction.getClip().duration * 1000)
   }
 
   update(delta, keysPressed) {
@@ -96,7 +124,23 @@ export class CharacterControls {
       play = "yasuo_idle1.anm"
     }
 
-    if (this.currentAction != play) {
+    if (
+      this.currentAction == "yasuo_dance_in.anm" ||
+      this.currentAction == "yasuo_dance_loop.anm"
+    ) {
+      if (directionPressed || this.isAttacking) {
+        const current = this.animationsMap.get(this.currentAction)
+        if (this.fluteTimeout) clearTimeout(this.fluteTimeout)
+        current.fadeOut(this.fadeDuration)
+        this.currentAction = "yasuo_idle1.anm"
+      }
+    }
+
+    if (
+      this.currentAction != play &&
+      this.currentAction != "yasuo_dance_in.anm" &&
+      this.currentAction != "yasuo_dance_loop.anm"
+    ) {
       const toPlay = this.animationsMap.get(play)
       const current = this.animationsMap.get(this.currentAction)
 
