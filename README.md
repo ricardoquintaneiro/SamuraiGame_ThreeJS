@@ -8,6 +8,8 @@ To play the game, use the following controls:
 - **Move Backward**: S
 - **Move Left**: A
 - **Move Right**: D
+- **Pan Camera**: Left-click and drag
+- **Zoom**: Mouse wheel
 - **Attack**: Space
 - **Run with haste toggle**: Shift
 - **Play flute**: F
